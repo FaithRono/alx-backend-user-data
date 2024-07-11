@@ -14,7 +14,7 @@ class BasicAuth(Auth):
                                             authorization_header: str) -> str:
         """Extracts and returns the Base64 part of the request header"""
         if not authorization_header \
-                or type(authorization_header) != str \
+                or not isinstance(authorization_header, str) \
                 or not authorization_header.startswith('Basic '):
             return None
         return authorization_header[6:]
@@ -23,11 +23,11 @@ class BasicAuth(Auth):
             self, base64_authorization_header: str) -> str:
         """Decodes the Base64-encoded part of an Authorization header."""
         if not base64_authorization_header \
-                or type(base64_authorization_header) != str:
+                or not isinstance(base64_authorization_header, str):
             return None
         try:
             return base64.b64decode(base64_authorization_header.encode())\
-                    .decode('utf-8')
+                .decode('utf-8')
         except (base64.binascii.Error, UnicodeDecodeError):
             return None
 
@@ -35,7 +35,7 @@ class BasicAuth(Auth):
             self, decoded_base64_authorization_header: str) -> (str, str):
         """Extracts user credentials from an decoded Authorization header."""
         if not decoded_base64_authorization_header \
-                or type(decoded_base64_authorization_header) != str \
+                or not isinstance(decoded_base64_authorization_header, str) \
                 or ':' not in decoded_base64_authorization_header:
             return None, None
         line = decoded_base64_authorization_header.split(':')
@@ -47,8 +47,8 @@ class BasicAuth(Auth):
                                      user_email: str,
                                      user_pwd: str) -> TypeVar('User'):
         """Retrieves a user object based on provided email and password."""
-        if not user_email or not user_pwd \
-                or type(user_email) != str or type(user_pwd) != str:
+        if not user_email or not user_pwd or not isinstance(
+                user_email, str) or not isinstance(user_pwd, str):
             return None
         try:
             user = User.search({'email': user_email})

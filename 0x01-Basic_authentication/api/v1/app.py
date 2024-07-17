@@ -23,38 +23,21 @@ def not_found(error) -> str:
 
 @app.errorhandler(401)
 def unauthorized(error) -> str:
-    """ Unauthorized handler
+    """
+    Error handler: Unauthorized
+    HTTP status code for an authorized request
     """
     return jsonify({"error": "Unauthorized"}), 401
 
 
 @app.errorhandler(403)
 def forbidden(error) -> str:
-    """ Forbidden handler
+    """
+    Error handler: Forbidden
+    HTTP status code for a request where the user is
+    authenticated but not allowed access to a resource
     """
     return jsonify({"error": "Forbidden"}), 403
-
-
-@app.before_request
-def before_request() -> None:
-    """ Before request
-    """
-    paths = ['/api/v1/status/', '/api/v1/unauthorized/',
-             '/api/v1/forbidden/']
-    if not auth:
-        return None
-    if not auth.require_auth(request.path, paths):
-        return None
-    if not auth.authorization_header(request):
-        abort(401)
-    if not auth.current_user(request):
-        abort(403)
-
-
-if __name__ == "__main__":
-    host = getenv("API_HOST", "0.0.0.0")
-    port = getenv("API_PORT", "5000")
-    app.run(host=host, port=port)
 
 
 if __name__ == "__main__":
